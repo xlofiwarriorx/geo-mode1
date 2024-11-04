@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Language Learning App</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        td, th {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: center;
+        }
+        .correct {
+            background-color: #d4edda;
+        }
+        .incorrect {
+            background-color: #f8d7da;
+        }
+    </style>
+</head>
+<body>
+    <h1>Language Learning App</h1>
+    <table id="verbsTable">
+        <tr>
+            <th>Настоящее время</th>
+            <th>Прошедшее время</th>
+            <th>Будущее время</th>
+        </tr>
+    </table>
+
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-analytics.js";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+
+        // Your web app's Firebase configuration
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        const firebaseConfig = {
+            apiKey: "AIzaSyDKYn8w7bQVFtEOUw_KdJ-MU0df94m8BEQ",
+            authDomain: "geo-web-app-mode1.firebaseapp.com",
+            projectId: "geo-web-app-mode1",
+            storageBucket: "geo-web-app-mode1.firebasestorage.app",
+            messagingSenderId: "583469473530",
+            appId: "1:583469473530:web:db60286788360322703343",
+            measurementId: "G-7LM6ZRR3T8"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+    </script>
+
+    <script>
+        const verbs = [
+            { present: "Сегодня я наливаю воду.", past: "Вчера я налил чай.", future: "Завтра я налью сок.", translations: ["ვასხამ", "დავასხი", "დავასხამ"] },
+            { present: "Сегодня я насыпаю сахар в кофе.", past: "Вчера я насыпал муку в миску.", future: "Завтра я насыплю соль.", translations: ["ვაყრი", "დავყარე", "დავაყრი"] },
+            { present: "Сегодня я стараюсь закончить дело.", past: "Вчера я постарался помочь.", future: "Завтра я постараюсь прийти вовремя.", translations: ["ვცდილობ", "ვცადე", "ვცდი"] },
+            { present: "Сегодня я лежу на кровати.", past: "Вчера я лежал на диване.", future: "Завтра я лягу пораньше.", translations: ["ვწევარ", "ვიწექი", "ვიწვები"] },
+            { present: "Сегодня я завтракаю перед работой.", past: "Вчера я позавтракал рано.", future: "Завтра я позавтракаю в 8 утра.", translations: ["ვსაუზმობ", "ვისაუზმე", "ვისაუზმებ"] },
+            { present: "Сегодня я обедаю в кафе.", past: "Вчера я пообедал с друзьями.", future: "Завтра я пообедаю дома.", translations: ["ვსადილობ", "ვისადილე", "ვისადილებ"] },
+            { present: "Сегодня я ужинаю с семьей.", past: "Вчера я поужинал в ресторане.", future: "Завтра я поужинаю дома.", translations: ["ვვახშმობ", "ვივახშმე", "ვივახშმებ"] },
+            { present: "Сегодня я просыпаюсь рано.", past: "Вчера я проснулся поздно.", future: "Завтра я проснусь в 7.", translations: ["ვიღვიძებ", "გავიღვიძე", "გავიღვიძებ"] },
+            { present: "Сегодня я встаю в 6 утра.", past: "Вчера я встал позже обычного.", future: "Завтра я встану в 5.", translations: ["ვდგები", "ავდექი", "ავდგები"] },
+            { present: "Сегодня я сажусь за стол.", past: "Вчера я сел на диван.", future: "Завтра я сяду в кресло.", translations: ["ვჯდები", "დავჯექი", "დავჯდები"] },
+            { present: "Сегодня я сижу на стуле.", past: "Вчера я сидел на подоконнике.", future: "Завтра я сяду за руль.", translations: ["ვზივარ", "ვიჯექი", "დავჯდები"] },
+            { present: "Сегодня я гуляю в парке.", past: "Вчера я гулял вдоль реки.", future: "Завтра я погуляю у озера.", translations: ["ვსეირნობ", "ვისეირნე", "ვისეირნებ"] },
+            { present: "Сегодня я общаюсь с коллегами.", past: "Вчера я общался с соседями.", future: "Завтра я буду общаться с семьей.", translations: ["ვურთიერთობ", "ვურთიერთობდი", "ვიურთობებ"] },
+            { present: "Сегодня я отдыхаю после работы.", past: "Вчера я отдыхал весь день.", future: "Завтра я отдохну после тренировки.", translations: ["ვისვენებ", "დავისვენე", "დავისვენებ"] },
+            { present: "Сегодня я возвращаюсь домой.", past: "Вчера я вернулся из командировки.", future: "Завтра я вернусь домой поздно.", translations: ["ვბრუნდები", "დავბრუნდი", "დავბრუნდები"] },
+            { present: "Сегодня я считаю деньги.", past: "Вчера я считал свои сбережения.", future: "Завтра я посчитаю расходы.", translations: ["ვითვლი", "დავითვალე", "დავითვლი"] },
+            { present: "Сегодня я читаю книгу.", past: "Вчера я читал журнал.", future: "Завтра я прочитаю статью.", translations: ["ვკითხულობ", "წავიკითხე", "წავიკითხავ"] },
+            { present: "Сегодня я спрашиваю коллегу.", past: "Вчера я спрашивал преподавателя.", future: "Завтра я спрошу друга.", translations: ["ვკითხულობ", "ვკითხე", "ვკითხავ"] },
+            { present: "Сегодня я тренируюсь в зале.", past: "Вчера я тренировался на улице.", future: "Завтра я потренируюсь дома.", translations: ["ვვარჯიშობ", "ვივარჯიშე", "ვივარჯიშებ"] },
+            { present: "Сегодня я ложусь спать рано.", past: "Вчера я лёг поздно.", future: "Завтра я лягу вовремя.", translations: ["ვწვები", "დავწექი", "დავწვები"] }
+        ];
+
+        const table = document.getElementById('verbsTable');
+
+        verbs.forEach(verb => {
+            const row1 = document.createElement('tr');
+            const row2 = document.createElement('tr');
+
+            const presentCell = document.createElement('td');
+            presentCell.textContent = verb.present;
+            row1.appendChild(presentCell);
+
+            const pastCell = document.createElement('td');
+            pastCell.textContent = verb.past;
+            row1.appendChild(pastCell);
+
+            const futureCell = document.createElement('td');
+            futureCell.textContent = verb.future;
+            row1.appendChild(futureCell);
+
+            const presentInput = document.createElement('td');
+            presentInput.innerHTML = '<input type="text" oninput="checkInput(this, 0, \'' + verb.translations[0] + '\')">';
+            row2.appendChild(presentInput);
+
+            const pastInput = document.createElement('td');
+            pastInput.innerHTML = '<input type="text" oninput="checkInput(this, 1, \'' + verb.translations[1] + '\')">';
+            row2.appendChild(pastInput);
+
+            const futureInput = document.createElement('td');
+            futureInput.innerHTML = '<input type="text" oninput="checkInput(this, 2, \'' + verb.translations[2] + '\')">';
+            row2.appendChild(futureInput);
+
+            table.appendChild(row1);
+            table.appendChild(row2);
+        });
+
+        function checkInput(input, index, correctValue) {
+            if (input.value === correctValue) {
+                input.classList.add('correct');
+                input.classList.remove('incorrect');
+            } else {
+                input.classList.add('incorrect');
+                input.classList.remove('correct');
+            }
+        }
+    </script>
+</body>
+</html>
